@@ -31,7 +31,7 @@ namespace Releaser.Models.LbCode
                 report.Contacts = contacts;
                 Reports.Add(report);
                 vm.OnWorkerIterate();
-                Thread.Sleep(1200);
+                Thread.Sleep(4000);
             }
         }
         public void Run()

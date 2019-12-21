@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows;
 
 namespace Releaser.ViewModels
 {
@@ -18,6 +19,7 @@ namespace Releaser.ViewModels
         public string LastSuccessfulAttempt { get; set; }
         public string LastAttemptStatus { get; set; }
         private bool IsRunning { get; set; }
+        public Contact SelectedContact { get; set; }
         public string SwitchOnOffContent
         {
             get
@@ -54,6 +56,10 @@ namespace Releaser.ViewModels
             NotifyOfPropertyChange(() => LastAttempt);
             NotifyOfPropertyChange(() => LastSuccessfulAttempt);
             NotifyOfPropertyChange(() => LastAttemptStatus);
+        }       
+        public void ReleaseContact()
+        {
+            MessageBox.Show($"{SelectedContact.Username}");
         }
         public void SwitchOnOff()
         {

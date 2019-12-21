@@ -14,30 +14,24 @@
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
             <Button Background="#252526" Foreground="#F1F1F1" x:Name="SwitchOnOff" Content="{Binding SwitchOnOffContent}"></Button>
-            <Button x:Name="Refresh">Manual refresh</Button>
+            <Button x:Name="ReleaseContact">Manual refresh</Button>
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastAttempt, Mode=OneWay}"/>
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastSuccessfulAttempt, Mode=OneWay}"/>
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastAttemptStatus, Mode=OneWay}"/>
         </StackPanel>
-        <ItemsControl Grid.Column="1" x:Name="Contacts">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
+        <ListBox ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
+            <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="#252526" BorderBrush="#3F3F46" BorderThickness="1" Margin="5" Padding="5">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Foreground="#F1F1F1" Text="{Binding Username}" />
-                            <TextBlock Foreground="#F1F1F1" Text="{Binding AmountRub}" />                            
-                            <TextBlock Foreground="#F1F1F1" Text="{Binding MarketAsPaid}" />                            
-                            <Label Foreground="#F1F1F1" Content="Releeznoot'"/>
+                    <Border BorderBrush="LightGoldenrodYellow" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Username}"/>
+                            <TextBlock Text="{Binding AmountRub}"/>
+                            <TextBlock Text="{Binding MarkedAsPaid}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>
