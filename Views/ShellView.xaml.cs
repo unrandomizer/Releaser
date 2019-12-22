@@ -24,5 +24,10 @@ namespace Releaser.Views
         {
             InitializeComponent();
         }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            // Shutdown the application.           
+             Environment.Exit(0);
+        }
     }
 }

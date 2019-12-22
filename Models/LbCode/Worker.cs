@@ -12,6 +12,7 @@ namespace Releaser.Models.LbCode
         private Thread workerThread;
         private ShellViewModel vm;
         public List<UpdateReport> Reports { get; set; }
+        private bool IsRunning { get; set; }
         public Worker(ShellViewModel shellvm)
         {
             vm = shellvm;
@@ -21,7 +22,7 @@ namespace Releaser.Models.LbCode
         }
         private void Loop()
         {
-            while (true)
+            while (IsRunning)
             {
                 UpdateReport report = new UpdateReport();
                 report.Time = DateTime.Now;
@@ -36,12 +37,13 @@ namespace Releaser.Models.LbCode
         }
         public void Run()
         {
+            IsRunning = true;
             workerThread = new Thread(Loop);
             workerThread.Start();
         }
         public void Stop()
         {
-            workerThread.Abort();
+            IsRunning = false;
         }
         public class UpdateReport
         {

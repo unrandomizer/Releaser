@@ -56,10 +56,12 @@ namespace Releaser.ViewModels
             NotifyOfPropertyChange(() => LastAttempt);
             NotifyOfPropertyChange(() => LastSuccessfulAttempt);
             NotifyOfPropertyChange(() => LastAttemptStatus);
-        }       
+        }
         public void ReleaseContact()
         {
-            MessageBox.Show($"{SelectedContact.Username}");
+            Contact copy = SelectedContact;
+            MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
+            MessageBox.Show($" btc to {copy.Username} has been released");
         }
         public void SwitchOnOff()
         {
