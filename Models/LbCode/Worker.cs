@@ -13,6 +13,8 @@ namespace Releaser.Models.LbCode
         private ShellViewModel.IterateDel _del;
         public List<UpdateReport> Reports { get; set; }
         private bool IsRunning { get; set; }
+        
+        
         public Worker(ShellViewModel.IterateDel del)
         {
             _del = del;
