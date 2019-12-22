@@ -17,7 +17,7 @@ namespace Releaser.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=New.db");
+            optionsBuilder.UseSqlite("Data Source=amlreleaser.db");
         }
     }
     public class DBContact : Contact
