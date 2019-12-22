@@ -14,11 +14,12 @@
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
             <Button Background="#252526" Foreground="#F1F1F1" x:Name="SwitchOnOff" Content="{Binding SwitchOnOffContent}"></Button>
-            <Button x:Name="ReleaseContact">Manual refresh</Button>
+            <Button x:Name="ReleaseContact">Release</Button>
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
-            <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastAttempt, Mode=OneWay}"/>
-            <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastSuccessfulAttempt, Mode=OneWay}"/>
-            <TextBlock Foreground="#F1F1F1" Text="{Binding Path=LastAttemptStatus, Mode=OneWay}"/>
+            <!--Contact details below in the border-->
+            <Border Background="DarkOrchid" BorderBrush="AliceBlue" BorderThickness="2" MinHeight="200" MinWidth="50">
+                
+            </Border>
         </StackPanel>
         <ListBox ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
             <ListBox.ItemTemplate>

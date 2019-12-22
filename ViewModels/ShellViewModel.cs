@@ -14,10 +14,7 @@ namespace Releaser.ViewModels
     {
         public BindableCollection<Contact> Contacts { get; set; }
         private Worker worker { get; set; }
-        public string ContactsCount => $"{Contacts.Count} contacts";
-        public string LastAttempt { get; set; }
-        public string LastSuccessfulAttempt { get; set; }
-        public string LastAttemptStatus { get; set; }
+        public string ContactsCount => $"{Contacts.Count} contacts";       
         private bool IsRunning { get; set; }
         public Contact SelectedContact { get; set; }
         public string SwitchOnOffContent
@@ -32,30 +29,17 @@ namespace Releaser.ViewModels
         public ShellViewModel()
         {
             Contacts = new BindableCollection<Contact>();
-            worker = new Worker(this);
-            LastAttempt = "TBD";
-            LastSuccessfulAttempt = "TBD";
-            LastAttemptStatus = "TBD";
+            worker = new Worker(this);           
         }
         public void OnWorkerIterate()
         {
-            var report = worker.Reports.Last();
-            LastAttempt = report.Time.ToString("mm:ss");
+            var report = worker.Reports.Last();        
             if (report.Success)
-            {
-                LastAttemptStatus = "success";
-                LastSuccessfulAttempt = report.Time.ToString("mm:ss");
+            {               
                 Contacts = new BindableCollection<Contact>(report.Contacts);
                 NotifyOfPropertyChange(() => Contacts);
                 NotifyOfPropertyChange(() => ContactsCount);
             }
-            else
-            {
-                LastAttemptStatus = "fail";
-            }
-            NotifyOfPropertyChange(() => LastAttempt);
-            NotifyOfPropertyChange(() => LastSuccessfulAttempt);
-            NotifyOfPropertyChange(() => LastAttemptStatus);
         }
         public void ReleaseContact()
         {

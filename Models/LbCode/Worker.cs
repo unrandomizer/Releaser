@@ -43,7 +43,7 @@ namespace Releaser.Models.LbCode
         }
         public void Stop()
         {
-            IsRunning = false;
+            IsRunning = false;         
         }
         public class UpdateReport
         {
