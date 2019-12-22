@@ -10,12 +10,12 @@ namespace Releaser.Models.LbCode
     {
         private LbWrapper lbcore;
         private Thread workerThread;
-        private ShellViewModel vm;
+        private ShellViewModel.IterateDel _del;
         public List<UpdateReport> Reports { get; set; }
         private bool IsRunning { get; set; }
-        public Worker(ShellViewModel shellvm)
+        public Worker(ShellViewModel.IterateDel del)
         {
-            vm = shellvm;
+            _del = del;
             Reports = new List<UpdateReport>();
             lbcore = new LbWrapper("", "", "");
             workerThread = new Thread(Loop);
@@ -31,7 +31,7 @@ namespace Releaser.Models.LbCode
                     report.Success = true;
                 report.Contacts = contacts;
                 Reports.Add(report);
-                vm.OnWorkerIterate();
+                _del();
                 Thread.Sleep(4000);
             }
         }

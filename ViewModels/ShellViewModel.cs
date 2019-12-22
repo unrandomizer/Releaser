@@ -12,6 +12,7 @@ namespace Releaser.ViewModels
 {
     public class ShellViewModel : PropertyChangedBase
     {
+        public delegate void IterateDel();
         public BindableCollection<Contact> Contacts { get; set; }
         private Worker worker { get; set; }
         public string ContactsCount => $"{Contacts.Count} contacts";       
@@ -29,7 +30,7 @@ namespace Releaser.ViewModels
         public ShellViewModel()
         {
             Contacts = new BindableCollection<Contact>();
-            worker = new Worker(this);           
+            worker = new Worker(OnWorkerIterate);
         }
         public void OnWorkerIterate()
         {
