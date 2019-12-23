@@ -3,14 +3,34 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using Releaser.Data;
 
 namespace Releaser.Models.LbCode
 {
     public class Worker
     {
+        #region Events
+        
+        public event NewContactHandler OnNewContact;
+        public delegate void NewContactHandler(NewContactArgs args);
+        public class NewContactArgs : EventArgs
+        {
+            
+        }
+        
+        public event PriceOvercomeHandler OnPriceOvercome;
+        public delegate void PriceOvercomeHandler(PriceOvercomeArgs args);
+        public class PriceOvercomeArgs : EventArgs
+        {
+            
+        }
+        #endregion
+        
+        
         private LbWrapper lbcore;
         private Thread workerThread;
-        private ShellViewModel.IterateDel _del;
+        private readonly ShellViewModel.IterateDel _del;
+        private RealeaserDbContext db = new RealeaserDbContext();
         public List<UpdateReport> Reports { get; set; }
         private bool IsRunning { get; set; }
         
@@ -26,13 +46,8 @@ namespace Releaser.Models.LbCode
         {
             while (IsRunning)
             {
-                UpdateReport report = new UpdateReport();
-                report.Time = DateTime.Now;
-                List<Contact> contacts = lbcore.GetContacts();
-                if (contacts != null)
-                    report.Success = true;
-                report.Contacts = contacts;
-                Reports.Add(report);
+                CheckNewContract();
+                CheckPriceOvercome();
                 _del();
                 Thread.Sleep(4000);
             }
@@ -47,6 +62,25 @@ namespace Releaser.Models.LbCode
         {
             IsRunning = false;         
         }
+
+        private void CheckNewContract()
+        {
+            UpdateReport report = new UpdateReport();
+            report.Time = DateTime.Now;
+            List<Contact> contacts = lbcore.GetContacts();
+            if (contacts != null)
+                report.Success = true;
+            report.Contacts = contacts;
+            Reports.Add(report); 
+            
+            OnNewContact(new NewContactArgs());
+        }
+        private void CheckPriceOvercome()
+        {
+
+            OnPriceOvercome(new PriceOvercomeArgs());
+        }
+        
         public class UpdateReport
         {
             public DateTime Time { get; set; }
