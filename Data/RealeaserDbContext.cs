@@ -22,6 +22,6 @@ namespace Releaser.Data
     }
     public class DBContact : Contact
     {
-        public Boolean IsMessageSanded { get; set; }
+        public bool IsMessageSent { get; set; }
     }
 }

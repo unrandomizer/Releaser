@@ -15,9 +15,23 @@ namespace Releaser.ViewModels
         public delegate void IterateDel();
         public BindableCollection<Contact> Contacts { get; set; }
         private Worker worker { get; set; }
-        public string ContactsCount => $"{Contacts.Count} contacts";       
+        public string ContactsCount => $"{Contacts.Count} contacts";
         private bool IsRunning { get; set; }
-        public Contact SelectedContact { get; set; }
+        private Contact _selectedContact;
+        public Contact SelectedContact
+        {
+            get
+            {
+                return _selectedContact;
+            }
+            set
+            {
+                if (value == null)
+                    return;
+                _selectedContact = value;
+                NotifyOfPropertyChange(() => SelectedContact);
+            }
+        }
         public string SwitchOnOffContent
         {
             get
@@ -34,9 +48,9 @@ namespace Releaser.ViewModels
         }
         public void OnWorkerIterate()
         {
-            var report = worker.Reports.Last();        
+            var report = worker.Reports.Last();
             if (report.Success)
-            {               
+            {
                 Contacts = new BindableCollection<Contact>(report.Contacts);
                 NotifyOfPropertyChange(() => Contacts);
                 NotifyOfPropertyChange(() => ContactsCount);
@@ -45,8 +59,15 @@ namespace Releaser.ViewModels
         public void ReleaseContact()
         {
             Contact copy = SelectedContact;
-            MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
-            MessageBox.Show($" btc to {copy.Username} has been released");
+            var choice = MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
+            if (choice == MessageBoxResult.Yes)
+            {
+                MessageBox.Show($" btc to {copy.Username} has been released");
+            }
+            else
+            {
+                MessageBox.Show($"Releasing cancelled");
+            }
         }
         public void SwitchOnOff()
         {

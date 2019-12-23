@@ -5,23 +5,76 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Releaser.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#525252">
+        Title="Releaser by AML Co Ltd" Height="450" Width="800" Background="#1E1E1E">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="6*" />
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
-            <Button Background="#252526" Foreground="#F1F1F1" x:Name="SwitchOnOff" Content="{Binding SwitchOnOffContent}"></Button>
-            <Button x:Name="ReleaseContact">Release</Button>
+            <Button Margin="7 7 7 0" FontSize="20" Background="#252526" Foreground="#939396" x:Name="SwitchOnOff" Content="{Binding SwitchOnOffContent}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="LightBlue" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#3F3F46" TargetName="Border" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+                
+            </Button>
+            <Button  Margin="7 5 7 7"  FontSize="20" Background="#252526" Foreground="#939396" x:Name="ReleaseContact" Content="RELEASE">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="LightBlue" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#3F3F46" TargetName="Border" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+
+            
+
+
+
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
             <!--Contact details below in the border-->
-            <Border Background="DarkOrchid" BorderBrush="AliceBlue" BorderThickness="2" MinHeight="200" MinWidth="50">
-                
+            <Border Background="#252526" BorderBrush="#3F3F46" BorderThickness="2" MinHeight="200" MinWidth="50">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding  Path=SelectedContact.Id, Mode=OneWay}" />
+                    <TextBlock Text="{Binding  Path=SelectedContact.Username, Mode=OneWay}" />
+                    <TextBlock FontSize="20" Text="{Binding  Path=SelectedContact.AmountRub, Mode=OneWay}" />
+                </StackPanel>
             </Border>
         </StackPanel>
-        <ListBox ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
+        <!--List of active contacts-->
+        <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border BorderBrush="LightGoldenrodYellow" BorderThickness="1">
