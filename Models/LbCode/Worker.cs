@@ -68,12 +68,14 @@ namespace Releaser.Models.LbCode
         {
             IsRunning = false;
         }
-        public void ReleaseContact(int contactId)
+        public void ReleaseContact(Contact contact)
         {
             ReleaseContactReport report = new ReleaseContactReport();
             report.Time = DateTime.Now;
-            bool result = lbcore.ReleaseBitcoins(contactId);
+            bool result = lbcore.ReleaseBitcoins(contact.Id);
             report.Success = result;
+            report.Username = contact.Username;
+            report.AmountRub = contact.AmountRub;
             Reports.Add(report);
             _del();
         }

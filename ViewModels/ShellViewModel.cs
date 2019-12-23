@@ -63,7 +63,7 @@ namespace Releaser.ViewModels
             if (choice == MessageBoxResult.Yes)
             {
                 MessageBox.Show($" btc to {copy.Username} is being released");
-                worker.ReleaseContact(copy.Id);
+                worker.ReleaseContact(copy);
             }
             else
             {

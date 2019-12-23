@@ -29,17 +29,19 @@ namespace Releaser.Models.Reports
             }
         }
     }
-    public class ReleaseContactReport: IReport
+    public class ReleaseContactReport : IReport
     {
         public DateTime Time { get; set; }
         public bool Success { get; set; }
+        public string Username { get; set; }
+        public decimal AmountRub { get; set; }
         public string Description
         {
             get
             {
                 if (Success)
-                    return "Bitcoins has been released successfully";
-                return "Releasing has been failed";
+                    return $"{AmountRub} RUB to {Username} released!";
+                return $"Releasing {AmountRub} RUB to {Username} has been failed";
             }
             set
             {
