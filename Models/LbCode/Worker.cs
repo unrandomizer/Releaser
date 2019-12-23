@@ -50,7 +50,7 @@ namespace Releaser.Models.LbCode
             while (IsRunning)
             {
                 CheckNewContract();
-                CheckPriceOvercome();
+                //CheckPriceOvercome();
                 _del();
                 Thread.Sleep(4000);
             }
@@ -93,8 +93,8 @@ namespace Releaser.Models.LbCode
         private void AddContractsToBd(NewContactArgs args)
         {
             foreach (var contact in args.NewContacts)
-            {
-                db.Contacts.Add((DBContact) contact);
+            { 
+                db.Contacts.Add(contact);
             }
 
             db.SaveChanges();

@@ -7,7 +7,7 @@ namespace Releaser.Data
 {
     public class RealeaserDbContext : DbContext
     {
-        public DbSet<DBContact> Contacts { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
 
         public RealeaserDbContext() : base()
@@ -19,9 +19,5 @@ namespace Releaser.Data
         {
             optionsBuilder.UseSqlite("Data Source=amlreleaser.db");
         }
-    }
-    public class DBContact : Contact
-    {
-        public bool IsMessageSent { get; set; }
     }
 }

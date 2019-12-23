@@ -227,5 +227,6 @@ namespace Releaser.Models.LbCode
         public decimal AmountBtc { get; set; }
         public bool IsBuying { get; set; }
         public bool MarkedAsPaid { get; set; }
+        public bool IsMessageSent { get; set; }
     }
 }
