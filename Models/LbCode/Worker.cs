@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Microsoft.EntityFrameworkCore;
 using Releaser.Data;
 
 namespace Releaser.Models.LbCode
@@ -41,6 +42,8 @@ namespace Releaser.Models.LbCode
             Reports = new List<UpdateReport>();
             lbcore = new LbWrapper("", "", "");
             workerThread = new Thread(Loop);
+
+            OnNewContact += AddContractsToBd;
         }
         private void Loop()
         {
@@ -78,13 +81,23 @@ namespace Releaser.Models.LbCode
             if(newContacts != null)
                 OnNewContact(new NewContactArgs()
                 {
-                    NewContacts = newContacts;
+                    NewContacts = newContacts
                 });
         }
         private void CheckPriceOvercome()
         {
 
             OnPriceOvercome(new PriceOvercomeArgs());
+        }
+
+        private void AddContractsToBd(NewContactArgs args)
+        {
+            foreach (var contact in args.NewContacts)
+            {
+                db.Contacts.Add((DBContact) contact);
+            }
+
+            db.SaveChanges();
         }
         
         public class UpdateReport
