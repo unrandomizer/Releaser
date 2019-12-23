@@ -1,7 +1,7 @@
 ﻿using Releaser.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using Releaser.Data;
 
@@ -15,7 +15,7 @@ namespace Releaser.Models.LbCode
         public delegate void NewContactHandler(NewContactArgs args);
         public class NewContactArgs : EventArgs
         {
-            
+            public List<Contact> NewContacts { get; set; }
         }
         
         public event PriceOvercomeHandler OnPriceOvercome;
@@ -65,15 +65,21 @@ namespace Releaser.Models.LbCode
 
         private void CheckNewContract()
         {
-            UpdateReport report = new UpdateReport();
-            report.Time = DateTime.Now;
             List<Contact> contacts = lbcore.GetContacts();
-            if (contacts != null)
-                report.Success = true;
-            report.Contacts = contacts;
-            Reports.Add(report); 
-            
-            OnNewContact(new NewContactArgs());
+            UpdateReport report = new UpdateReport()
+            {
+                Time = DateTime.Now,
+                Success = contacts != null,
+                Contacts = contacts
+            };
+            Reports.Add(report);
+
+            List<Contact> newContacts = contacts?.Except(db.Contacts).ToList();
+            if(newContacts != null)
+                OnNewContact(new NewContactArgs()
+                {
+                    NewContacts = newContacts;
+                });
         }
         private void CheckPriceOvercome()
         {
