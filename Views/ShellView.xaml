@@ -34,7 +34,6 @@
                         </Setter>
                     </Style>
                 </Button.Style>
-                
             </Button>
             <Button  Margin="7 5 7 7"  FontSize="20" Background="#252526" Foreground="#939396" x:Name="ReleaseContact" Content="RELEASE">
                 <Button.Style>
@@ -59,17 +58,13 @@
             </Button>
 
 
-            
-
-
-
             <TextBlock Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
             <!--Contact details below in the border-->
-            <Border Background="#252526" BorderBrush="#3F3F46" BorderThickness="2" MinHeight="200" MinWidth="50">
+            <Border Background="#252526" BorderBrush="#3F3F46" BorderThickness="2">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding  Path=SelectedContact.Id, Mode=OneWay}" />
-                    <TextBlock Text="{Binding  Path=SelectedContact.Username, Mode=OneWay}" />
-                    <TextBlock FontSize="20" Text="{Binding  Path=SelectedContact.AmountRub, Mode=OneWay}" />
+                    <TextBlock Foreground="Yellow" Text="{Binding StringFormat=ID\={0}, Path=SelectedContact.Id, Mode=OneWay}" />
+                    <TextBlock FontSize="13" Foreground="Yellow" Text="{Binding  Path=SelectedContact.Username, Mode=OneWay}" />
+                    <TextBlock FontSize="20" Foreground="Yellow" Text="{Binding StringFormat=Total {0}RUB, Path=SelectedContact.AmountRub, Mode=OneWay}" />
                 </StackPanel>
             </Border>
         </StackPanel>
@@ -77,11 +72,11 @@
         <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border BorderBrush="LightGoldenrodYellow" BorderThickness="1">
+                    <Border >
                         <StackPanel>
-                            <TextBlock Text="{Binding Username}"/>
-                            <TextBlock Text="{Binding AmountRub}"/>
-                            <TextBlock Text="{Binding MarkedAsPaid}"/>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Username}"/>
+                            <TextBlock FontSize="17" FontFamily="Comic Sans MS" Foreground="#DBD442"  Text="{Binding StringFormat=\={0}RUB,Path= AmountRub}"/>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding MarkedAsPaid}"/>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
