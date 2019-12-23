@@ -77,7 +77,8 @@ namespace Releaser.Models.LbCode
             };
             Reports.Add(report);
 
-            List<Contact> newContacts = contacts?.Except(db.Contacts).ToList();
+            List<Contact> contactsInDb = db.Contacts.ToList();
+            List<Contact> newContacts = contacts?.Except(contactsInDb).ToList();
             if(newContacts != null)
                 OnNewContact(new NewContactArgs()
                 {
@@ -92,12 +93,15 @@ namespace Releaser.Models.LbCode
 
         private void AddContractsToBd(NewContactArgs args)
         {
-            foreach (var contact in args.NewContacts)
-            { 
-                db.Contacts.Add(contact);
-            }
+            using (var dbn = new RealeaserDbContext())
+            {
+                foreach (var contact in args.NewContacts)
+                {
+                    dbn.Contacts.Add(contact);
+                }
 
-            db.SaveChanges();
+                dbn.SaveChanges();
+            }
         }
         
         public class UpdateReport

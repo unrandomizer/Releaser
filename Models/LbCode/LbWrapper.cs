@@ -215,7 +215,7 @@ namespace Releaser.Models.LbCode
         public string Advertiser { get; set; }
         public string BankName { get; set; }
     }
-    public class Contact
+    public class Contact: IEquatable<Contact>
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -228,5 +228,25 @@ namespace Releaser.Models.LbCode
         public bool IsBuying { get; set; }
         public bool MarkedAsPaid { get; set; }
         public bool IsMessageSent { get; set; }
+        
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Contact) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
+
+        public bool Equals(Contact other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Id == other.Id;
+        }
     }
 }
