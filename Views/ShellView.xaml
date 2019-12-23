@@ -82,5 +82,19 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+    <!--Third column-->
+        <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Reports}" SelectedItem="{Binding SelectedContact}" Grid.Column="2" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border >
+                        <StackPanel>
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Time}"/>
+                            <!--<TextBlock FontSize="17" FontFamily="Comic Sans MS" Foreground="#DBD442"  Text="{Binding StringFormat=\={0}RUB,Path= AmountRub}"/>-->
+                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Description}"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </Window>

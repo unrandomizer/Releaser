@@ -5,51 +5,54 @@ using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Releaser.Data;
+using Releaser.Models.Reports;
 
 namespace Releaser.Models.LbCode
 {
     public class Worker
     {
         #region Events
-        
+
         public event NewContactHandler OnNewContact;
         public delegate void NewContactHandler(NewContactArgs args);
         public class NewContactArgs : EventArgs
         {
             public List<Contact> NewContacts { get; set; }
         }
-        
+
         public event PriceOvercomeHandler OnPriceOvercome;
         public delegate void PriceOvercomeHandler(PriceOvercomeArgs args);
         public class PriceOvercomeArgs : EventArgs
         {
-            
+
         }
         #endregion
-        
-        
+
+
         private LbWrapper lbcore;
         private Thread workerThread;
         private readonly ShellViewModel.IterateDel _del;
         private RealeaserDbContext db = new RealeaserDbContext();
-        public List<UpdateReport> Reports { get; set; }
+        public List<Contact> LatestContacts { get; set; }
+        public List<IReport> Reports { get; set; }
         private bool IsRunning { get; set; }
-        
-        
+
+
         public Worker(ShellViewModel.IterateDel del)
         {
             _del = del;
-            Reports = new List<UpdateReport>();
+            Reports = new List<IReport>();
+            LatestContacts = new List<Contact>();
             lbcore = new LbWrapper("", "", "");
             workerThread = new Thread(Loop);
 
-            OnNewContact += AddContractsToBd;
+            OnNewContact += AddContactsToDb;
         }
         private void Loop()
         {
             while (IsRunning)
             {
-                CheckNewContract();
+                CheckNewContact();
                 //CheckPriceOvercome();
                 _del();
                 Thread.Sleep(4000);
@@ -63,35 +66,45 @@ namespace Releaser.Models.LbCode
         }
         public void Stop()
         {
-            IsRunning = false;         
+            IsRunning = false;
         }
-
-        private void CheckNewContract()
+        public void ReleaseContact(int contactId)
+        {
+            ReleaseContactReport report = new ReleaseContactReport();
+            report.Time = DateTime.Now;
+            bool result = lbcore.ReleaseBitcoins(contactId);
+            report.Success = result;
+            Reports.Add(report);
+            _del();
+        }
+        private void CheckNewContact()
         {
             List<Contact> contacts = lbcore.GetContacts();
-            UpdateReport report = new UpdateReport()
+            CheckNewContactsReport report = new CheckNewContactsReport()
             {
                 Time = DateTime.Now,
                 Success = contacts != null,
                 Contacts = contacts
             };
             Reports.Add(report);
+            if (contacts != null)
+                LatestContacts = contacts;
 
             List<Contact> contactsInDb = db.Contacts.ToList();
             List<Contact> newContacts = contacts?.Except(contactsInDb).ToList();
-            if(newContacts != null)
+            if (newContacts != null)
                 OnNewContact(new NewContactArgs()
                 {
                     NewContacts = newContacts
                 });
+            _del();
         }
         private void CheckPriceOvercome()
         {
-
             OnPriceOvercome(new PriceOvercomeArgs());
         }
 
-        private void AddContractsToBd(NewContactArgs args)
+        private void AddContactsToDb(NewContactArgs args)
         {
             using (var dbn = new RealeaserDbContext())
             {
@@ -99,16 +112,8 @@ namespace Releaser.Models.LbCode
                 {
                     dbn.Contacts.Add(contact);
                 }
-
                 dbn.SaveChanges();
             }
-        }
-        
-        public class UpdateReport
-        {
-            public DateTime Time { get; set; }
-            public bool Success { get; set; }
-            public List<Contact> Contacts { get; set; }
         }
     }
 }

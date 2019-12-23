@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using Releaser.Models;
 using Releaser.Models.LbCode;
+using Releaser.Models.Reports;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Releaser.ViewModels
     {
         public delegate void IterateDel();
         public BindableCollection<Contact> Contacts { get; set; }
+        public BindableCollection<IReport> Reports { get; set; }
         private Worker worker { get; set; }
         public string ContactsCount => $"{Contacts.Count} contacts";
         private bool IsRunning { get; set; }
@@ -48,13 +50,11 @@ namespace Releaser.ViewModels
         }
         public void OnWorkerIterate()
         {
-            var report = worker.Reports.Last();
-            if (report.Success)
-            {
-                Contacts = new BindableCollection<Contact>(report.Contacts);
-                NotifyOfPropertyChange(() => Contacts);
-                NotifyOfPropertyChange(() => ContactsCount);
-            }
+            Contacts = new BindableCollection<Contact>(worker.LatestContacts);
+            NotifyOfPropertyChange(() => Contacts);
+            NotifyOfPropertyChange(() => ContactsCount);
+            Reports = new BindableCollection<IReport>(worker.Reports);
+            NotifyOfPropertyChange(() => Reports);
         }
         public void ReleaseContact()
         {
@@ -62,7 +62,8 @@ namespace Releaser.ViewModels
             var choice = MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {
-                MessageBox.Show($" btc to {copy.Username} has been released");
+                MessageBox.Show($" btc to {copy.Username} is being released");
+                worker.ReleaseContact(copy.Id);
             }
             else
             {
