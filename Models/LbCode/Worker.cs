@@ -69,6 +69,7 @@ namespace Releaser.Models.LbCode
         {
             IsRunning = false;
         }
+        
         public void ReleaseContact(Contact contact)
         {
             ReleaseContactReport report = new ReleaseContactReport()
@@ -98,7 +99,7 @@ namespace Releaser.Models.LbCode
             {
                 LatestContacts = contacts;
 
-                OnNewContact(new NewContactArgs()
+                OnNewContact?.Invoke(new NewContactArgs()
                 {
                     NewContacts = newContacts
                 });
@@ -109,9 +110,10 @@ namespace Releaser.Models.LbCode
         private void CheckPriceOvercome()
         {
             // Some Compare and change logic hire.
-            OnPriceOvercome(new PriceOvercomeArgs());
+            OnPriceOvercome?.Invoke(new PriceOvercomeArgs());
         }
 
+        
         private void AddContactsToDb(NewContactArgs args)
         {
             foreach (var contact in args.NewContacts)
