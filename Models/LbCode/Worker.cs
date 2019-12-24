@@ -47,6 +47,7 @@ namespace Releaser.Models.LbCode
             workerThread = new Thread(Loop);
 
             OnNewContact += AddContactsToDb;
+            OnNewContact += x => Console.WriteLine(x.NewContacts.Count);
         }
         private void Loop()
         {
@@ -70,13 +71,15 @@ namespace Releaser.Models.LbCode
         }
         public void ReleaseContact(Contact contact)
         {
-            ReleaseContactReport report = new ReleaseContactReport();
-            report.Time = DateTime.Now;
-            bool result = lbcore.ReleaseBitcoins(contact.Id);
-            report.Success = result;
-            report.Username = contact.Username;
-            report.AmountRub = contact.AmountRub;
+            ReleaseContactReport report = new ReleaseContactReport()
+            {
+                Time = DateTime.Now,
+                Success = lbcore.ReleaseBitcoins(contact.Id),
+                Username = contact.Username,
+                AmountRub = contact.AmountRub
+            };
             Reports.Add(report);
+            
             _del();
         }
         private void CheckNewContact()
@@ -89,33 +92,33 @@ namespace Releaser.Models.LbCode
                 Contacts = contacts
             };
             Reports.Add(report);
-            if (contacts != null)
+
+            List<Contact> newContacts = contacts?.Except(db.Contacts).ToList();
+            if (newContacts != null)
+            {
                 LatestContacts = contacts;
 
-            List<Contact> contactsInDb = db.Contacts.ToList();
-            List<Contact> newContacts = contacts?.Except(contactsInDb).ToList();
-            if (newContacts != null)
                 OnNewContact(new NewContactArgs()
                 {
                     NewContacts = newContacts
                 });
+            }
+
             _del();
         }
         private void CheckPriceOvercome()
         {
+            // Some Compare and change logic hire.
             OnPriceOvercome(new PriceOvercomeArgs());
         }
 
         private void AddContactsToDb(NewContactArgs args)
         {
-            using (var dbn = new RealeaserDbContext())
+            foreach (var contact in args.NewContacts)
             {
-                foreach (var contact in args.NewContacts)
-                {
-                    dbn.Contacts.Add(contact);
-                }
-                dbn.SaveChanges();
+                db.Contacts.Add(contact);
             }
+            db.SaveChanges();
         }
     }
 }
