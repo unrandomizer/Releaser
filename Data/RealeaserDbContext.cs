@@ -8,7 +8,7 @@ namespace Releaser.Data
     public class RealeaserDbContext : DbContext
     {
         public DbSet<Contact> Contacts { get; set; }
-
+        public DbSet<User> Users { get; set; }
 
         public RealeaserDbContext() : base()
         {
@@ -19,5 +19,13 @@ namespace Releaser.Data
         {
             optionsBuilder.UseSqlite("Data Source=amlreleaser.db");
         }
+    }
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Message { get; set; }
+        public string Key { get; set; }
+        public string PrivateKey { get; set; }
     }
 }
