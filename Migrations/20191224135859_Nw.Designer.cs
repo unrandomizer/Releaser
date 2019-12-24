@@ -9,8 +9,8 @@ using Releaser.Data;
 namespace Releaser.Migrations
 {
     [DbContext(typeof(RealeaserDbContext))]
-    [Migration("20191222225405_NewMig")]
-    partial class NewMig
+    [Migration("20191224135859_Nw")]
+    partial class Nw
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,7 +18,30 @@ namespace Releaser.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.0");
 
-            modelBuilder.Entity("Releaser.Data.DBContact", b =>
+            modelBuilder.Entity("Releaser.Data.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PrivateKey")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Releaser.Models.LbCode.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +62,7 @@ namespace Releaser.Migrations
                     b.Property<bool>("IsBuying")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsMessageSanded")
+                    b.Property<bool>("IsMessageSent")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("MarkedAsPaid")

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Releaser.Migrations
 {
-    public partial class NewMig : Migration
+    public partial class Nw : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,11 +22,27 @@ namespace Releaser.Migrations
                     AmountBtc = table.Column<decimal>(nullable: false),
                     IsBuying = table.Column<bool>(nullable: false),
                     MarkedAsPaid = table.Column<bool>(nullable: false),
-                    IsMessageSanded = table.Column<bool>(nullable: false)
+                    IsMessageSent = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contacts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    Key = table.Column<string>(nullable: true),
+                    PrivateKey = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
         }
 
@@ -34,6 +50,9 @@ namespace Releaser.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Contacts");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

@@ -115,7 +115,7 @@ namespace Releaser.Models.LbCode
             List<Contact> toSend = db.Contacts.Where(x => x.IsMessageSent == false).ToList();
             foreach (var contact in toSend)
             {
-                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromDb");
+                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, db.Users.First().Message);
                 if (sendMessageAttempt)
                     contact.IsMessageSent = true;
                 PostMessageReport report = new PostMessageReport
