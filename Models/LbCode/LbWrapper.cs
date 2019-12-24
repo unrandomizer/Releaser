@@ -1,6 +1,8 @@
 ﻿using LocalBitcoins;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Releaser.Models.LbCode
@@ -87,6 +89,8 @@ namespace Releaser.Models.LbCode
                 {
                     Contact contact = new Contact();
                     contact.Id = x.data.contact_id;
+                    contact.Username = x.data.buyer.username;
+                    contact.RefCode = x.data.reference_code;
                     contact.CreatedAt = x.data.created_at;
                     contact.AmountBtc = x.data.amount_btc;
                     contact.AmountRub = x.data.amount;
@@ -102,6 +106,7 @@ namespace Releaser.Models.LbCode
             catch (Exception e)
             {
                 // logging 
+                Debug.WriteLine(e.Message);
                 return null;
             }
         }
@@ -192,13 +197,17 @@ namespace Releaser.Models.LbCode
             try
             {
                 var resp = client.ContactRelease(contactId.ToString()).Result;
-                string msg = resp.Result.data.message;
+                string msg = resp.data.message;
+                Debug.WriteLine(msg);
                 // log resp
                 return true;
             }
             catch (Exception e)
             {
                 //log exception
+                if (e.InnerException != null)
+                    Debug.WriteLine(e.InnerException.Message);
+                Debug.WriteLine(e.Message);
                 return false;
             }
         }

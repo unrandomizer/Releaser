@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Releaser.Data;
 using Releaser.Models.Reports;
+using System.Diagnostics;
 
 namespace Releaser.Models.LbCode
 {
@@ -55,6 +56,7 @@ namespace Releaser.Models.LbCode
         {
             while (IsRunning)
             {
+                Debug.WriteLine("Loop() iteration. Checking Contacts");
                 CheckNewContact();
                 //CheckPriceOvercome();
                 _del();
