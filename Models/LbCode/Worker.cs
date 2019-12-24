@@ -46,6 +46,7 @@ namespace Releaser.Models.LbCode
             lbcore = new LbWrapper("", "", "");
             workerThread = new Thread(Loop);
 
+            OnNewContact += SendMessages;
             OnNewContact += AddContactsToDb;
             OnNewContact += x => Console.WriteLine(x.NewContacts.Count);
         }
@@ -114,6 +115,31 @@ namespace Releaser.Models.LbCode
         }
 
         
+        private void SendMessages(NewContactArgs args)
+        {
+            List<Contact> toDelete = new List<Contact>();
+            
+            foreach (var contact in args.NewContacts)
+            {
+                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromBd");
+                if (sendMessageAttempt)
+                    contact.IsMessageSent = true;
+                else
+                   toDelete.Add(contact); 
+            }
+
+            foreach (var delContact in toDelete)
+                args.NewContacts.Remove(delContact);
+            
+            // Second option
+            List<Contact> toSend = db.Contacts.Where(x => x.IsMessageSent == false).ToList();
+            foreach (var contact in toSend)
+            {
+                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromBd");
+                if (sendMessageAttempt)
+                    contact.IsMessageSent = true;
+            }
+        }
         private void AddContactsToDb(NewContactArgs args)
         {
             foreach (var contact in args.NewContacts)
