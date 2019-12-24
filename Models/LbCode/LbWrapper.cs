@@ -45,62 +45,65 @@ namespace Releaser.Models.LbCode
         }
         public List<Contact> GetContacts()
         {
-            List<Contact> result = new List<Contact>();
-            Random rand = new Random();
-            int dice = rand.Next(0, 10);
-            Contact contact1 = new Contact();
-            contact1.AmountRub = 888;
-            contact1.Username = "stainlessBuyer";
-            contact1.MarkedAsPaid = true;
-            result.Add(contact1);
-            if (dice < 7)
-            {
-                Contact contact = new Contact();
-                contact.AmountRub = 1337;
-                contact.Username = "pahanDrinksCola";
-                contact.MarkedAsPaid = true;
-                result.Add(contact);
-            }
-            if (dice < 5)
-            {
-                Contact contact = new Contact();
-                contact.AmountRub = 2200;
-                contact.Username = "2gBuds";
-                contact.MarkedAsPaid = false;
-                result.Add(contact);
-            }
-            if (dice < 3)
-                return null;
-
-            return result;
-            //try
+            /* virtual
+            //List<Contact> result = new List<Contact>();
+            //Random rand = new Random();
+            //int dice = rand.Next(0, 10);
+            //Contact contact1 = new Contact();
+            //contact1.AmountRub = 888;
+            //contact1.Username = "stainlessBuyer";
+            //contact1.MarkedAsPaid = true;
+            //contact1.Id = 1337;
+            //result.Add(contact1);
+            //if (dice < 7)
             //{
-            //    List<Contact> result = new List<Contact>();
-            //    var smth = client.GetDashboard().Result;
-            //    IEnumerable<dynamic> list = smth.data.contact_list;
-            //    foreach (dynamic x in list)
-            //    {
-            //        Contact contact = new Contact();
-            //        contact.Id = x.data.contact_id;
-            //        contact.CreatedAt = x.data.created_at;
-            //        contact.AmountBtc = x.data.amount_btc;
-            //        contact.AmountRub = x.data.amount;
-            //        contact.IsBuying = x.data.is_buying;
-            //        if (x.data.payment_completed_at != null)
-            //        {
-            //            contact.MarkedAsPaid = true;
-            //        }
-            //        result.Add(contact);
-            //    }
-            //    return result;
+            //    Contact contact = new Contact();
+            //    contact.AmountRub = 1337;
+            //    contact.Username = "pahanDrinksCola";
+            //    contact.MarkedAsPaid = true;
+            //    contact.Id = 1488;
+            //    result.Add(contact);
             //}
-            //catch (Exception e)
+            //if (dice < 5)
             //{
-            //    // logging 
+            //    Contact contact = new Contact();
+            //    contact.AmountRub = 2200;
+            //    contact.Username = "2gBuds";
+            //    contact.MarkedAsPaid = false;
+            //    contact.Id = 2048;
+            //    result.Add(contact);
+            //}
+            //if (dice < 3)
             //    return null;
-            //}
+            //return result;s
+            */
 
-
+            try
+            {
+                List<Contact> result = new List<Contact>();
+                var smth = client.GetDashboard().Result;
+                IEnumerable<dynamic> list = smth.data.contact_list;
+                foreach (dynamic x in list)
+                {
+                    Contact contact = new Contact();
+                    contact.Id = x.data.contact_id;
+                    contact.CreatedAt = x.data.created_at;
+                    contact.AmountBtc = x.data.amount_btc;
+                    contact.AmountRub = x.data.amount;
+                    contact.IsBuying = x.data.is_buying;
+                    if (x.data.payment_completed_at != null)
+                    {
+                        contact.MarkedAsPaid = true;
+                    }
+                    result.Add(contact);
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                // logging 
+                return null;
+            }
         }
         public bool SendMessage(int contactId, string msg)
         {
@@ -215,7 +218,7 @@ namespace Releaser.Models.LbCode
         public string Advertiser { get; set; }
         public string BankName { get; set; }
     }
-    public class Contact: IEquatable<Contact>
+    public class Contact : IEquatable<Contact>
     {
         public int Id { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -228,13 +231,13 @@ namespace Releaser.Models.LbCode
         public bool IsBuying { get; set; }
         public bool MarkedAsPaid { get; set; }
         public bool IsMessageSent { get; set; }
-        
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((Contact) obj);
+            return Equals((Contact)obj);
         }
 
         public override int GetHashCode()

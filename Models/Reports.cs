@@ -15,13 +15,14 @@ namespace Releaser.Models.Reports
     {
         public DateTime Time { get; set; }
         public bool Success { get; set; }
+        public string Username { get; set; }        
         public string Description
         {
             get
             {
                 if (Success)
-                    return "Message has been sent successfully";
-                return "Sending has been failed";
+                    return $"Message to {Username} has been sent";
+                return $"Sending msg to {Username} has been failed";
             }
             set
             {

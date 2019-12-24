@@ -53,12 +53,14 @@ namespace Releaser.ViewModels
             Contacts = new BindableCollection<Contact>(worker.LatestContacts);
             NotifyOfPropertyChange(() => Contacts);
             NotifyOfPropertyChange(() => ContactsCount);
-            Reports = new BindableCollection<IReport>(worker.Reports);
+            Reports = new BindableCollection<IReport>(worker.Reports.OrderByDescending(t=>t.Time));
             NotifyOfPropertyChange(() => Reports);
         }
         public void ReleaseContact()
         {
             Contact copy = SelectedContact;
+            if (copy == null)
+                return;
             var choice = MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {

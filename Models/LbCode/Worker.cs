@@ -57,7 +57,7 @@ namespace Releaser.Models.LbCode
                 CheckNewContact();
                 //CheckPriceOvercome();
                 _del();
-                Thread.Sleep(4000);
+                Thread.Sleep(5000);
             }
         }
         public void Run()
@@ -70,7 +70,7 @@ namespace Releaser.Models.LbCode
         {
             IsRunning = false;
         }
-        
+
         public void ReleaseContact(Contact contact)
         {
             ReleaseContactReport report = new ReleaseContactReport()
@@ -81,7 +81,6 @@ namespace Releaser.Models.LbCode
                 AmountRub = contact.AmountRub
             };
             Reports.Add(report);
-            
             _del();
         }
         private void CheckNewContact()
@@ -94,18 +93,16 @@ namespace Releaser.Models.LbCode
                 Contacts = contacts
             };
             Reports.Add(report);
-
+            if (contacts != null)
+                LatestContacts = contacts;
             List<Contact> newContacts = contacts?.Except(db.Contacts).ToList();
             if (newContacts != null)
             {
-                LatestContacts = contacts;
-
                 OnNewContact?.Invoke(new NewContactArgs()
                 {
                     NewContacts = newContacts
                 });
             }
-
             _del();
         }
         private void CheckPriceOvercome()
@@ -113,36 +110,26 @@ namespace Releaser.Models.LbCode
             // Some Compare and change logic hire.
             OnPriceOvercome?.Invoke(new PriceOvercomeArgs());
         }
-
-        
         private void SendMessages(NewContactArgs args)
-        {
-            List<Contact> toDelete = new List<Contact>();
-            
-            foreach (var contact in args.NewContacts)
-            {
-                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromBd");
-                if (sendMessageAttempt)
-                    contact.IsMessageSent = true;
-                else
-                   toDelete.Add(contact); 
-            }
-
-            foreach (var delContact in toDelete)
-                args.NewContacts.Remove(delContact);
-            
-            // Second option
+        {            
             List<Contact> toSend = db.Contacts.Where(x => x.IsMessageSent == false).ToList();
             foreach (var contact in toSend)
             {
-                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromBd");
+                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromDb");
                 if (sendMessageAttempt)
                     contact.IsMessageSent = true;
+                PostMessageReport report = new PostMessageReport
+                {
+                    Success = sendMessageAttempt,
+                    Time = DateTime.Now,
+                    Username = contact.Username
+                };
+                Reports.Add(report);
             }
         }
         private void AddContactsToDb(NewContactArgs args)
         {
-            foreach (var contact in args.NewContacts)
+            foreach (Contact contact in args.NewContacts)
             {
                 db.Contacts.Add(contact);
             }
