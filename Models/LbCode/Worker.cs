@@ -42,8 +42,9 @@ namespace Releaser.Models.LbCode
         {
             _del = del;
             Reports = new List<IReport>();
-            LatestContacts = new List<Contact>();
-            lbcore = new LbWrapper("", "", "");
+            LatestContacts = new List<Contact>();            
+            User user = db.Users.First();
+            lbcore = new LbWrapper(user.ApiKey, user.ApiSecret, user.Username);
             workerThread = new Thread(Loop);
 
             OnNewContact += SendMessages;
@@ -111,11 +112,11 @@ namespace Releaser.Models.LbCode
             OnPriceOvercome?.Invoke(new PriceOvercomeArgs());
         }
         private void SendMessages(NewContactArgs args)
-        {            
+        {
             List<Contact> toSend = db.Contacts.Where(x => x.IsMessageSent == false).ToList();
-            foreach (var contact in toSend)
+            foreach (Contact contact in toSend)
             {
-                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, "SomeTextFromDb");
+                bool sendMessageAttempt = lbcore.SendMessage(contact.Id, db.Users.First().Message);
                 if (sendMessageAttempt)
                     contact.IsMessageSent = true;
                 PostMessageReport report = new PostMessageReport

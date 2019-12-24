@@ -23,9 +23,9 @@ namespace Releaser.Data
     public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public string Username { get; set; }
         public string Message { get; set; }
-        public string Key { get; set; }
-        public string PrivateKey { get; set; }
+        public string ApiKey { get; set; }
+        public string ApiSecret { get; set; }
     }
 }
