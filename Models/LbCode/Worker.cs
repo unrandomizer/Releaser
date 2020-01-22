@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Releaser.Data;
 using Releaser.Models.Reports;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Releaser.Models.LbCode
 {
@@ -38,12 +39,16 @@ namespace Releaser.Models.LbCode
         public List<IReport> Reports { get; set; }
         private bool IsRunning { get; set; }
 
-
         public Worker(ShellViewModel.IterateDel del)
         {
             _del = del;
             Reports = new List<IReport>();
-            LatestContacts = new List<Contact>();            
+            LatestContacts = new List<Contact>();
+            if (db.Users.Count() == 0)
+            {
+                MessageBox.Show("Table 'Users' are empty. Program will be closed", "Warning");
+                Environment.Exit(0);
+            }
             User user = db.Users.First();
             lbcore = new LbWrapper(user.ApiKey, user.ApiSecret, user.Username);
             workerThread = new Thread(Loop);
@@ -115,7 +120,7 @@ namespace Releaser.Models.LbCode
         }
         private void SendMessages(NewContactArgs args)
         {
-            List<Contact> toSend = db.Contacts.Where(x => x.IsMessageSent == false).ToList();
+            List<Contact> toSend = db.Contacts.Where(x => !x.IsMessageSent && !x.IsBuying).ToList();
             foreach (Contact contact in toSend)
             {
                 bool sendMessageAttempt = lbcore.SendMessage(contact.Id, db.Users.First().Message);

@@ -47,39 +47,6 @@ namespace Releaser.Models.LbCode
         }
         public List<Contact> GetContacts()
         {
-            /* virtual
-            //List<Contact> result = new List<Contact>();
-            //Random rand = new Random();
-            //int dice = rand.Next(0, 10);
-            //Contact contact1 = new Contact();
-            //contact1.AmountRub = 888;
-            //contact1.Username = "stainlessBuyer";
-            //contact1.MarkedAsPaid = true;
-            //contact1.Id = 1337;
-            //result.Add(contact1);
-            //if (dice < 7)
-            //{
-            //    Contact contact = new Contact();
-            //    contact.AmountRub = 1337;
-            //    contact.Username = "pahanDrinksCola";
-            //    contact.MarkedAsPaid = true;
-            //    contact.Id = 1488;
-            //    result.Add(contact);
-            //}
-            //if (dice < 5)
-            //{
-            //    Contact contact = new Contact();
-            //    contact.AmountRub = 2200;
-            //    contact.Username = "2gBuds";
-            //    contact.MarkedAsPaid = false;
-            //    contact.Id = 2048;
-            //    result.Add(contact);
-            //}
-            //if (dice < 3)
-            //    return null;
-            //return result;s
-            */
-
             try
             {
                 List<Contact> result = new List<Contact>();
