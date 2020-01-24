@@ -9,12 +9,10 @@ namespace Releaser.Data
     {
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<User> Users { get; set; }
-
         public RealeaserDbContext() : base()
         {
             Database.EnsureCreated();
         }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("Data Source=amlreleaser.db");

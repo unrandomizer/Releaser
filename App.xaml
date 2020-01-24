@@ -6,9 +6,10 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <local:Bootstrapper x:Key="Bootstrapper" />
+                    <local:Bootstrapper x:Key="Bootstrapper" />                   
                 </ResourceDictionary>
+                <ResourceDictionary Source="ResDict.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        </ResourceDictionary>        
     </Application.Resources>
 </Application>

@@ -10,7 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="5*" />
-            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Orientation="Vertical">
@@ -57,39 +57,69 @@
                 </Button.Style>
             </Button>
 
+            <Button  Margin="7 5 7 7"  FontSize="20" Background="#252526" Foreground="#939396" x:Name="LoadRecentMessages" Content="MessagesView"/>
 
-            <TextBlock Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
+            <TextBlock Margin="4 0 0 0" Foreground="#F1F1F1" Text="{Binding Path=ContactsCount, Mode=OneWay}"/>
             <!--Contact details below in the border-->
             <Border Background="#252526" BorderBrush="#3F3F46" BorderThickness="2">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Foreground="Yellow" Text="{Binding StringFormat=ID\={0}, Path=SelectedContact.Id, Mode=OneWay}" />
-                    <TextBlock FontSize="13" Foreground="Yellow" Text="{Binding  Path=SelectedContact.Username, Mode=OneWay}" />
-                    <TextBlock FontSize="20" Foreground="Yellow" Text="{Binding StringFormat=Total {0}RUB, Path=SelectedContact.AmountRub, Mode=OneWay}" />
+                    <TextBlock Margin="4 0 0 0" Foreground="#999999" FontSize="15" Text="{Binding StringFormat=#{0}, Path=SelectedContact.Id, Mode=OneWay}" />
+                    <TextBlock Margin="4 0 0 0" FontSize="14" Foreground="#999999" Text="{Binding  Path=SelectedContact.Username, Mode=OneWay}" />
+                    <TextBlock Margin="4 0 0 0" FontSize="20" Foreground="Yellow" Text="{Binding StringFormat={}{0}K, Path=SelectedContact.AmountKiloRub, Mode=OneWay}" />
                 </StackPanel>
             </Border>
+
+            <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Messages}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border>
+                            <Grid>                              
+                                <TextBlock FontSize="12" Foreground="#acacac">
+                                    <Run Text="{Binding SenderUsername}"></Run>
+                                    <Run Text=": "></Run>
+                                    <Run Text="{Binding Msg}"></Run>
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
         </StackPanel>
         <!--List of active contacts-->
         <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Contacts}" SelectedItem="{Binding SelectedContact}" Grid.Column="1" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border >
+                    <Border Margin="0 0 0 5">
                         <StackPanel>
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding Username}"/>
-                            <TextBlock FontSize="17" FontFamily="Comic Sans MS" Foreground="#DBD442"  Text="{Binding StringFormat=\={0}RUB,Path= AmountRub}"/>
-                            <TextBlock Foreground="WhiteSmoke" Text="{Binding MarkedAsPaid}"/>
+                            <TextBlock FontSize="14" Foreground="{Binding UsernameColor}" Text="{Binding Username}"/>
+                            <TextBlock FontSize="17" Width="200" FontFamily="Comic Sans MS" Foreground="#DBD442"  Text="{Binding AmountRub, StringFormat={}{0} RUB}"/>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="14" FontWeight="Bold" Foreground="{Binding MarkedAsPaidStringColor}" HorizontalAlignment="Left" Text="PAID"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" FontSize="14" Foreground="#bfbfbf" Text="{Binding Elapsed}"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" FontSize="14" FontWeight="Bold" Foreground="{Binding IsBuyingStringColor}" HorizontalAlignment="Right" Text="{Binding IsBuyingString}"/>
+
+                            </Grid>
                         </StackPanel>
                     </Border>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    <!--Third column-->
+        <!--Third column-->
         <ListBox Background="#1E1E1E" BorderBrush="#3F3F46" Margin="5" ItemsSource="{Binding Reports}" SelectedItem="{Binding SelectedContact}" Grid.Column="2" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Border >
+                    <Border  Margin="0 0 0 5">
                         <StackPanel>
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Time}"/>
-                            <!--<TextBlock FontSize="17" FontFamily="Comic Sans MS" Foreground="#DBD442"  Text="{Binding StringFormat=\={0}RUB,Path= AmountRub}"/>-->
                             <TextBlock Foreground="WhiteSmoke" Text="{Binding Description}"/>
                         </StackPanel>
                     </Border>

@@ -30,48 +30,55 @@ namespace Releaser.Models.LbCode
         }
         #endregion
 
-
-        private LbWrapper lbcore;
+        private readonly LbWrapper lbcore;
         private Thread workerThread;
         private readonly ShellViewModel.IterateDel _del;
-        private RealeaserDbContext db = new RealeaserDbContext();
+        private readonly RealeaserDbContext db = new RealeaserDbContext();
         public List<Contact> LatestContacts { get; set; }
         public List<IReport> Reports { get; set; }
+        public List<Message> RecentMessages { get; set; }
         private bool IsRunning { get; set; }
 
         public Worker(ShellViewModel.IterateDel del)
         {
             _del = del;
             Reports = new List<IReport>();
+            RecentMessages = new List<Message>();
             LatestContacts = new List<Contact>();
             if (db.Users.Count() == 0)
             {
-                MessageBox.Show("Table 'Users' are empty. Program will be closed", "Warning");
+                MessageBox.Show("Table 'Users' is empty. Program will be closed", "Warning");
                 Environment.Exit(0);
             }
             User user = db.Users.First();
             lbcore = new LbWrapper(user.ApiKey, user.ApiSecret, user.Username);
-            workerThread = new Thread(Loop);
+            workerThread = new Thread(ContactsLoop);
 
             OnNewContact += SendMessages;
             OnNewContact += AddContactsToDb;
             OnNewContact += x => Console.WriteLine(x.NewContacts.Count);
+
         }
-        private void Loop()
+        private void ContactsLoop()
         {
             while (IsRunning)
             {
                 Debug.WriteLine("Loop() iteration. Checking Contacts");
-                CheckNewContact();
+                bool result = CheckNewContact();
                 //CheckPriceOvercome();
                 _del();
-                Thread.Sleep(5000);
+                if (result)
+                    Thread.Sleep(5000);
+                else
+                {
+                    Thread.Sleep(3000);
+                }
             }
         }
         public void Run()
         {
             IsRunning = true;
-            workerThread = new Thread(Loop);
+            workerThread = new Thread(ContactsLoop);
             workerThread.Start();
         }
         public void Stop()
@@ -91,7 +98,45 @@ namespace Releaser.Models.LbCode
             Reports.Add(report);
             _del();
         }
-        private void CheckNewContact()
+        public void MessagesLoop()
+        {
+            while (true)
+            {
+                LoadMessages();
+                Thread.Sleep(17000);
+            }
+        }
+        public void LoadMessages()
+        {
+            var msgs = lbcore.GetRecentMessages();
+            LoadRecentMessagesReport report = new LoadRecentMessagesReport
+            {
+                Time = DateTime.Now,
+                Success = false
+            };
+            if (msgs == null)
+            {
+                Reports.Add(report);
+                _del();
+                return;
+            }
+            var theirMsgs = msgs.Where(msg => msg.SenderUsername != db.Users.First().Username).ToList(); // 
+            if (theirMsgs == null)
+            {
+                Reports.Add(report);
+                _del();
+                return;
+            }
+            RecentMessages = theirMsgs;
+            report.Success = true;
+            Reports.Add(report);
+            _del();
+        }
+        public void GetMessagesForContactId()
+        {
+            lbcore.GetMessagesForContactId(55891370);
+        }
+        private bool CheckNewContact()
         {
             List<Contact> contacts = lbcore.GetContacts();
             CheckNewContactsReport report = new CheckNewContactsReport()
@@ -112,6 +157,9 @@ namespace Releaser.Models.LbCode
                 });
             }
             _del();
+            if (contacts == null)
+                return false;
+            return true;
         }
         private void CheckPriceOvercome()
         {
@@ -125,7 +173,10 @@ namespace Releaser.Models.LbCode
             {
                 bool sendMessageAttempt = lbcore.SendMessage(contact.Id, db.Users.First().Message);
                 if (sendMessageAttempt)
+                {
                     contact.IsMessageSent = true;
+                    db.SaveChanges();
+                }
                 PostMessageReport report = new PostMessageReport
                 {
                     Success = sendMessageAttempt,

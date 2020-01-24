@@ -15,14 +15,14 @@ namespace Releaser.Models.Reports
     {
         public DateTime Time { get; set; }
         public bool Success { get; set; }
-        public string Username { get; set; }        
+        public string Username { get; set; }
         public string Description
         {
             get
             {
                 if (Success)
-                    return $"Message to {Username} has been sent";
-                return $"Sending msg to {Username} has been failed";
+                    return $"{Username} message SENT";
+                return $"{Username} sending FAILED";
             }
             set
             {
@@ -41,8 +41,8 @@ namespace Releaser.Models.Reports
             get
             {
                 if (Success)
-                    return $"{AmountRub} RUB to {Username} released!";
-                return $"Releasing {AmountRub} RUB to {Username} has been failed";
+                    return $"{AmountRub} RUB to {Username} RELEASED";
+                return $"{AmountRub} RUB to {Username} releasing FAILED";
             }
             set
             {
@@ -60,8 +60,26 @@ namespace Releaser.Models.Reports
             get
             {
                 if (Success)
-                    return "Contacts were loaded";
-                return "Contact's loading has been failed";
+                    return "CONTACTS LOADED";
+                return "CONTACTS FAILED";
+            }
+            set
+            {
+                return;
+            }
+        }
+    }
+    public class LoadRecentMessagesReport : IReport
+    {
+        public DateTime Time { get; set; }
+        public bool Success { get; set; }       
+        public string Description
+        {
+            get
+            {
+                if (Success)
+                    return "RECENT MESSAGES LOADED";
+                return "LOADING MSGs FAILED";
             }
             set
             {

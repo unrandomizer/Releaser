@@ -2,11 +2,13 @@
 using Releaser.Models;
 using Releaser.Models.LbCode;
 using Releaser.Models.Reports;
+using Releaser.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Releaser.ViewModels
@@ -15,8 +17,9 @@ namespace Releaser.ViewModels
     {
         public delegate void IterateDel();
         public BindableCollection<Contact> Contacts { get; set; }
+        public BindableCollection<Models.LbCode.Message> Messages { get; set; }
         public BindableCollection<IReport> Reports { get; set; }
-        private Worker worker { get; set; }
+        private Worker Worker { get; set; }
         public string ContactsCount => $"{Contacts.Count} contacts";
         private bool IsRunning { get; set; }
         private Contact _selectedContact;
@@ -46,14 +49,16 @@ namespace Releaser.ViewModels
         public ShellViewModel()
         {
             Contacts = new BindableCollection<Contact>();
-            worker = new Worker(OnWorkerIterate);
+            Worker = new Worker(OnWorkerIterate);
         }
         public void OnWorkerIterate()
         {
-            Contacts = new BindableCollection<Contact>(worker.LatestContacts);
+            Contacts = new BindableCollection<Contact>(Worker.LatestContacts);
+            Messages = new BindableCollection<Models.LbCode.Message>(Worker.RecentMessages);
             NotifyOfPropertyChange(() => Contacts);
             NotifyOfPropertyChange(() => ContactsCount);
-            Reports = new BindableCollection<IReport>(worker.Reports.OrderByDescending(t=>t.Time));
+            NotifyOfPropertyChange(() => Messages);
+            Reports = new BindableCollection<IReport>(Worker.Reports.OrderByDescending(t => t.Time));
             NotifyOfPropertyChange(() => Reports);
         }
         public void ReleaseContact()
@@ -61,27 +66,31 @@ namespace Releaser.ViewModels
             Contact copy = SelectedContact;
             if (copy == null)
                 return;
-            var choice = MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MissclickChecker", MessageBoxButton.YesNo);
+            var choice = MessageBox.Show($"Release btc to {copy.Username} for {copy.AmountRub} Rub?", "MisclickChecker", MessageBoxButton.YesNo);
             if (choice == MessageBoxResult.Yes)
             {
-                MessageBox.Show($" btc to {copy.Username} is being released");
-                worker.ReleaseContact(copy);
+                Worker.ReleaseContact(copy);
             }
             else
             {
                 MessageBox.Show($"Releasing cancelled");
             }
         }
+        public void LoadRecentMessages()
+        {
+            Task task = new Task(Worker.MessagesLoop);
+            task.Start();
+        }
         public void SwitchOnOff()
         {
             if (IsRunning)
             {
-                worker.Stop();
+                Worker.Stop();
                 IsRunning = false;
             }
             else
             {
-                worker.Run();
+                Worker.Run();
                 IsRunning = true;
             }
             NotifyOfPropertyChange(() => SwitchOnOffContent);
